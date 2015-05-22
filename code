@@ -4,7 +4,6 @@ import msgpack
 
 class Shooter:
 	def __init__(self, targets):
-		print "Targets:", targets
 		self.targets = targets
 		self.targetLength = len(targets)
 		self.DPMem = [None] * self.targetLength
@@ -32,6 +31,5 @@ with open("input.txt", "rb") as input_file, open("output.txt", "wb") as output_f
 	for i in xrange(problem_count):
 		shooter = Shooter(inPack.unpack())
 		maxScore, maxIndex = shooter.maxScore()
-		print maxScore, maxIndex
 		msgpack.pack(maxScore, output_file)
 		msgpack.pack(maxIndex, output_file)
