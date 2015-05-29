@@ -2,6 +2,8 @@
 
 import msgpack
 
+### Top-down
+"""
 class Shooter:
 	def __init__(self, targets):
 		self.targets = targets
@@ -22,14 +24,44 @@ class Shooter:
 			else:
 				self.DPMem[index] = maxScore, maxIndex
 		return self.DPMem[index]
+"""
+
+from copy import deepcopy
+
+### Bottom-up
+def shooter(targets):
+	prevPrevMax = [targets[0], [1]]
+	if targets[1] < targets[0]:
+		prevMax = prevPrevMax
+	else:
+		prevMax = [targets[1], [2]]
+
+	for i in xrange(2, len(targets)):
+		if targets[i] + prevPrevMax[0] > prevMax[0]:
+			if prevPrevMax is prevMax:
+				prevPrevMax = deepcopy(prevMax)
+
+			prevPrevMax[0] += targets[i]
+			prevPrevMax[1] += [i + 1]
+			prevPrevMax, prevMax = prevMax, prevPrevMax
+		else:
+			prevPrevMax = prevMax
 	
+	return prevMax
+
+
 
 with open("input.txt", "rb") as input_file, open("output.txt", "wb") as output_file:
 	inPack = msgpack.Unpacker(input_file, use_list = True)
 
 	problem_count = inPack.unpack()
 	for i in xrange(problem_count):
-		shooter = Shooter(inPack.unpack())
-		maxScore, maxIndex = shooter.maxScore()
+		### Top-down
+		# shoote = Shooter(inPack.unpack())
+		# maxScore, maxIndex = shoote.maxScore()
+
+		### Bottom-up
+		maxScore, maxIndex = shooter(inPack.unpack())
+
 		msgpack.pack(maxScore, output_file)
 		msgpack.pack(maxIndex, output_file)
