@@ -26,29 +26,25 @@ class Shooter:
 		return self.DPMem[index]
 """
 
-from copy import deepcopy
+from copy import copy
 
 ### Bottom-up
 def shooter(targets):
-	prevPrevMax = [targets[0], [1]]
-	if targets[1] < targets[0]:
-		prevMax = prevPrevMax
-	else:
-		prevMax = [targets[1], [2]]
+	prevPrevMax = [0, []]
+	prevMax = [targets[0], [1]]
 
-	for i in xrange(2, len(targets)):
+	for i in xrange(1, len(targets)):
 		if targets[i] + prevPrevMax[0] > prevMax[0]:
 			if prevPrevMax is prevMax:
-				prevPrevMax = deepcopy(prevMax)
+				prevPrevMax = [prevMax[0], copy(prevMax[1])]
 
 			prevPrevMax[0] += targets[i]
-			prevPrevMax[1] += [i + 1]
+			prevPrevMax[1].append(i + 1)
 			prevPrevMax, prevMax = prevMax, prevPrevMax
 		else:
 			prevPrevMax = prevMax
 	
 	return prevMax
-
 
 
 with open("input.txt", "rb") as input_file, open("output.txt", "wb") as output_file:
@@ -57,8 +53,8 @@ with open("input.txt", "rb") as input_file, open("output.txt", "wb") as output_f
 	problem_count = inPack.unpack()
 	for i in xrange(problem_count):
 		### Top-down
-		# shoote = Shooter(inPack.unpack())
-		# maxScore, maxIndex = shoote.maxScore()
+		# shooter = Shooter(inPack.unpack())
+		# maxScore, maxIndex = shooter.maxScore()
 
 		### Bottom-up
 		maxScore, maxIndex = shooter(inPack.unpack())
